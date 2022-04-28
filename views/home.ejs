@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <script type="text/javascript">
+      function get_action(e) {
+        // Inside script tags
+        e.preventDeafult();
+        const name = document.getElementById("name");
+        const room = document.getElementById("room");
+
+        console.log(name.innerText);
+      }
+    </script>
+    <title>SmDevOps Broadcaster</title>
+  </head>
+  <body>
+    <div>
+      <form action="/", method="post">
+        <label>
+          Type your Name
+          <input id="name" type="text" value="" name="name"/>
+        </label>
+        <label>
+          Type the room number
+          <input id="room" type="number" value="" name="room"/>
+        </label>
+        <button id="broadcastBtn" type="submit">
+          Join as Broadcaster
+        </button>
+        <button id="viewBtn" type="submit">
+          Join as Viewer
+        </button>
+        <!-- <button type="submit">Join as Viewer</button> -->
+      </form>
+    </div>
+  </body>
+</html>
