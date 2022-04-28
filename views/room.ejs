@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <script>
       const ROOM_ID = "<%= roomId %>";
+      const ACTION = "<%= action %>";
+      const NAME = "<%= name %>";
     </script>
     <script
       defer
@@ -15,6 +17,12 @@
     <script src="script.js" defer></script>
     <title>SmDevOps Broadcaster</title>
     <style>
+      #container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+
       #video-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, 300px);
@@ -29,6 +37,23 @@
     </style>
   </head>
   <body>
-    <div id="video-grid"></div>
+    <div id="container">
+      <div id="controls">
+        <button id="start">Start</button>
+        <button id="stop">Stop</button>
+        <button id="home">home</button>
+      </div>
+      <div id="video-grid"></div>
+      <p id="broadcaster"></p>
+    </div>
+
+    <script>
+      if (ACTION === "view")
+        document.getElementById("controls").style.display = "none";
+      if (ACTION === "broadcast")
+        document.getElementById(
+          "broadcaster"
+        ).innerText = `${NAME} is broadcasting`;
+    </script>
   </body>
 </html>

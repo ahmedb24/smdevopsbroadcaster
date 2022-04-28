@@ -5,37 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <script type="text/javascript">
-      function get_action(e) {
-        // Inside script tags
-        e.preventDeafult();
-        const name = document.getElementById("name");
-        const room = document.getElementById("room");
-
-        console.log(name.innerText);
-      }
-    </script>
     <title>SmDevOps Broadcaster</title>
   </head>
   <body>
     <div>
-      <form action="/", method="post">
+      <form>
         <label>
           Type your Name
-          <input id="name" type="text" value="" name="name"/>
+          <input id="name" type="text" name="name" />
         </label>
         <label>
           Type the room number
-          <input id="room" type="number" value="" name="room"/>
+          <input id="room" type="number" name="room" />
+          <input id="room" type="hidden" name="room" />
         </label>
-        <button id="broadcastBtn" type="submit">
-          Join as Broadcaster
-        </button>
-        <button id="viewBtn" type="submit">
-          Join as Viewer
-        </button>
-        <!-- <button type="submit">Join as Viewer</button> -->
+        <input
+          id="broadcastBtn"
+          type="submit"
+          name="broadcast"
+          value="Join as Broadcaster"
+        />
+        <input id="viewBtn" type="submit" name="view" value="Join as Viewer" />
       </form>
     </div>
+    <script>
+      let name;
+      let room;
+
+      const setupListeners = () => {
+        document.getElementById("broadcastBtn").onclick = function (e) {
+          handleSubmit(e);
+        };
+        document.getElementById("viewBtn").onclick = function (e) {
+          handleSubmit(e);
+        };
+        document.getElementById("name").onchange = function (e) {
+          handleChange(e);
+        };
+        document.getElementById("room").onchange = function (e) {
+          handleChange(e);
+        };
+        const handleChange = (e) => {
+          if (e.target.name === "name") name = e.target.value;
+          if (e.target.name === "room") room = e.target.value;
+        };
+      };
+
+      setupListeners();
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name || !room) {
+          alert("Missing Required Fields");
+          return;
+        }
+        location.replace(`/${room}?action=${e.target.name}&name=${name}`);
+      };
+    </script>
   </body>
 </html>
