@@ -1,13 +1,21 @@
 require('dotenv').config()
 const express = require('express')
+const { ExpressPeerServer } = require("peer");
+
 
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server)
 
+const peerServer = ExpressPeerServer(server, {
+    debug: true,
+});
+
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use("/peerjs", peerServer);
+
 
 const port = process.env.PORT;
 
@@ -21,7 +29,6 @@ app.use("/", roomRoutes)
 
 io.on('connection', socket => {
     socket.on('join-room', (roomId, userId) => {
-        console.log('someone joined', roomId, userId)
         socket.join(roomId)
         socket.to(roomId).broadcast.emit('user-connected', userId)
 

@@ -73,9 +73,11 @@ function pauseOrPlayVideo(action) {
 }
 
 const myPeer = new Peer(undefined, {
+    path: "/peerjs",
     host: '/',
-    port: '3008'
+    port: '3030'
 })
+
 myPeer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id)
     currentUserId = id;
