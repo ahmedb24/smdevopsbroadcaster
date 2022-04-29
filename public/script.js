@@ -5,23 +5,26 @@ const startBtn = document.getElementById('start')
 const pauseBtn = document.getElementById('pause')
 const stopBtn = document.getElementById('stop')
 const peers = {};
-let currentUserId = '';
 let myVideoStream;
 
-startBtn.addEventListener('click', (e) => {
-    pauseOrPlayVideo('start')
-})
-
-
-pauseBtn.addEventListener('click', (e) => {
-    pauseOrPlayVideo('pause');
-})
-
-stopBtn.addEventListener('click', (e) => {
-    location.replace('/')
-})
+setupListeners()
 
 startRecording();
+
+function setupListeners() {
+    startBtn.addEventListener('click', (e) => {
+        pauseOrPlayVideo('start')
+    })
+
+
+    pauseBtn.addEventListener('click', (e) => {
+        pauseOrPlayVideo('pause');
+    })
+
+    stopBtn.addEventListener('click', (e) => {
+        location.replace('/')
+    })
+}
 
 function startRecording() {
     const myVideo = document.createElement('video')
@@ -80,7 +83,6 @@ const myPeer = new Peer(undefined, {
 
 myPeer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id)
-    currentUserId = id;
 })
 
 myPeer.on('call', call => {
