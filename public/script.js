@@ -3,7 +3,7 @@ const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
 const startBtn = document.getElementById('start')
 const stopBtn = document.getElementById('stop')
-const home = document.getElementById('home')
+const homeBtn = document.getElementById('home')
 const peers = {};
 
 startBtn.addEventListener('click', (e) => {
@@ -18,11 +18,11 @@ stopBtn.addEventListener('click', (e) => {
     }
 })
 
-home.addEventListener('click', (e) => {
+homeBtn.addEventListener('click', (e) => {
     location.replace('/')
 })
 
-ACTION === 'view' && startRecording();
+startRecording();
 
 function startRecording() {
     const myVideo = document.createElement('video')
@@ -33,13 +33,7 @@ function startRecording() {
         audio: true
     }).then(stream => {
         addVideoStream(myVideo, stream)
-        myPeer.on('call', call => {
-            call.answer(stream)
-            const video = document.createElement('video')
-            call.on('stream', userVideoStream => {
-                addVideoStream(video, userVideoStream)
-            })
-        })
+
         socket.on('user-connected', userId => {
             console.log("User Connected " + userId)
             makeConnectionToUser(userId, stream)
@@ -79,4 +73,14 @@ const myPeer = new Peer(undefined, {
 })
 myPeer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id)
+})
+
+myPeer.on('call', call => {
+    navigator.getUserMedia({ video: true, audio: true }, (stream) => {
+        call.answer(stream)
+        const video = document.createElement('video')
+        call.on('stream', userVideoStream => {
+            addVideoStream(video, userVideoStream)
+        }, (err) => { console.error('Failed To get local stream', err) })
+    })
 })

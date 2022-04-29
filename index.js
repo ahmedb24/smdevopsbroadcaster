@@ -21,6 +21,7 @@ app.use("/", roomRoutes)
 
 io.on('connection', socket => {
     socket.on('join-room', (roomId, userId) => {
+        console.log('someone joined', roomId, userId)
         socket.join(roomId)
         socket.to(roomId).broadcast.emit('user-connected', userId)
 
