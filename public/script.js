@@ -2,23 +2,22 @@ const socket = io('/')
 
 const videoGrid = document.getElementById('video-grid')
 const startBtn = document.getElementById('start')
+const pauseBtn = document.getElementById('pause')
 const stopBtn = document.getElementById('stop')
-const homeBtn = document.getElementById('home')
 const peers = {};
+let currentUserId = '';
+let myVideoStream;
 
 startBtn.addEventListener('click', (e) => {
-    startRecording()
+    pauseOrPlayVideo('start')
+})
+
+
+pauseBtn.addEventListener('click', (e) => {
+    pauseOrPlayVideo('pause');
 })
 
 stopBtn.addEventListener('click', (e) => {
-    const child = videoGrid.lastElementChild;
-    while (child) {
-        videoGrid.removeChild(child)
-        child = videoGrid.lastElementChild;
-    }
-})
-
-homeBtn.addEventListener('click', (e) => {
     location.replace('/')
 })
 
@@ -32,11 +31,12 @@ function startRecording() {
         video: true,
         audio: true
     }).then(stream => {
-        addVideoStream(myVideo, stream)
+        myVideoStream = stream;
+        addVideoStream(myVideo, stream);
 
         socket.on('user-connected', userId => {
             console.log("User Connected " + userId)
-            makeConnectionToUser(userId, stream)
+            makeConnectionToUser(userId, stream);
         })
 
         socket.on('user-disconnected', userId => {
@@ -67,12 +67,18 @@ function addVideoStream(video, stream) {
     videoGrid.append(video)
 }
 
+function pauseOrPlayVideo(action) {
+    action === 'start' && (myVideoStream.getVideoTracks()[0].enabled = true);
+    action === 'pause' && (myVideoStream.getVideoTracks()[0].enabled = false);
+}
+
 const myPeer = new Peer(undefined, {
     host: '/',
     port: '3008'
 })
 myPeer.on('open', id => {
     socket.emit('join-room', ROOM_ID, id)
+    currentUserId = id;
 })
 
 myPeer.on('call', call => {
